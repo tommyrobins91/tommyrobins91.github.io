@@ -1,0 +1,21 @@
+<h2>The problem</h2>
+<p>Asset managers get rent roll, collections and work order data as separate spreadsheet tabs. Answering simple questions (which property is dragging occupancy, how much rent is below market, when the lease cliff hits) means rebuilding pivots every month.</p>
+<h2>What I built</h2>
+<p>An interactive dashboard on a 5-property, 240-unit sample portfolio:</p>
+<ul>
+<li>Property switcher that filters every view</li>
+<li>KPI strip: physical and economic occupancy, in-place vs. market rent, loss-to-lease, vacancy loss, upcoming expirations</li>
+<li>Property comparison table</li>
+<li>Charts for occupancy by property, rent by unit type, and an 18-month lease expiration schedule</li>
+<li>Unit mix table and a sortable, filterable full rent roll</li>
+<li>Light and dark mode, readable on a phone</li>
+</ul>
+<h2>What it found</h2>
+<ul>
+<li>Physical occupancy of 92.9% against economic occupancy of 89.8%, so concessions and below-market leases cost about 3 points</li>
+<li>Harbor Point is the weak asset at 86.5% occupancy</li>
+<li>Net loss-to-lease of 2.7%</li>
+<li>152 leases (68% of occupied units) expire within 12 months, peaking in May 2027. That's the renewal risk to plan for.</li>
+</ul>
+<h2>Built with</h2>
+<p>Python (pandas, openpyxl) to clean the workbook, data embedded as JSON in a single HTML file, plain JavaScript and SVG for the charts, and Playwright screenshots at desktop and mobile widths for QA.</p>
