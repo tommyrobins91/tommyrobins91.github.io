@@ -108,3 +108,10 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
 .toolgrp h4{font:500 12px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);padding-top:9px}
 @media(max-width:860px){.stat{aspect-ratio:auto;min-height:220px;padding:28px}.stat .big{font-size:52px}.feature{flex-direction:column}.feature .txt,.feature .shot{width:100%}.feature .shot{border-left:0;aspect-ratio:16/10;order:-1;border-bottom:1px solid var(--line)}.feature .txt{padding:26px 28px}.grid,.grid3,.steps{grid-template-columns:1fr}.toolgrp{grid-template-columns:1fr;gap:10px}.idx .hide{display:none}.stats{gap:34px}.nav nav{gap:18px;font-size:14px}.brand span{display:none}.hero{padding:72px 0 64px}}
 @media(min-width:861px) and (max-width:1060px){.grid3{grid-template-columns:1fr 1fr}}
+a.card{color:inherit}
+a.card:hover h3{color:var(--acc)}
+a.card:hover .cs{text-decoration:underline}
+.heroimg{display:block}
+.heroimg .shot{transition:border-color .2s}
+.heroimg:hover .shot{border-color:var(--acc)}
+.snote{font-size:13.5px;color:var(--mut)}

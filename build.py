@@ -41,8 +41,7 @@ PROJECTS = [
          short="Ranks private industrial owners by likelihood to sell",
          tags=["Python", "Public records", "CMBS data"],
          repo=f"{GH}/Florida-Distress-Monitor", private=True,
-         stat=("5", "signals, one ranked list",
-               "Tax delinquency · liens · code violations · hold period · loan maturity")),
+         demo="demos/distress-monitor/index.html", img="distress-monitor.png", sample=True),
     dict(slug="sourcing-pipeline", cat="tools",
          title="Off-market sourcing pipeline", date="July 2026", year="2026",
          blurb="Turns a raw Reonomy export of 1,000+ properties into a filtered, CRM-ready call list of "
@@ -50,8 +49,7 @@ PROJECTS = [
          short="Reonomy export to a filtered, CRM-ready call list",
          tags=["Python", "pandas", "Airtable"],
          repo=f"{GH}/Off-Market-Sourcing-Pipeline", private=True,
-         stat=("1,359", "properties in, one call list out",
-               "Institutional filter · contact rules · occupant count · size bands · Airtable import")),
+         demo="demos/sourcing-pipeline/index.html", img="sourcing-pipeline.png", sample=True),
     dict(slug="multifamily", cat="tools",
          title="Multifamily rent roll monitor", date="October 2026", year="2026",
          blurb="Occupancy, loss-to-lease, unit mix and lease rollover across a 5-property, 240-unit portfolio, "
@@ -67,7 +65,7 @@ PROJECTS = [
          short="AMT, EQIX and DLR coverage; EQIX pitch approved by the IC",
          tags=["Valuation", "REITs", "Excel"],
          repo=f"{GH}/Digital-Infrastructure-REIT-Research",
-         stat=("EQIX", "approved by the Investment Committee", "NAV · FFO/AFFO · DDM · DCF")),
+         demo="demos/reit-valuation/index.html", img="reit-research.png", sample=True),
     dict(slug="underwriting", cat="research",
          title="Industrial acquisitions underwriting", date="2026", year="2026",
          blurb="50+ value-add industrial deals underwritten across Florida on a 39-tab acquisitions model, "
@@ -75,8 +73,7 @@ PROJECTS = [
          short="50+ value-add industrial deals on a 39-tab model",
          tags=["Excel", "Python", "Acquisitions"],
          repo=f"{GH}/Industrial-Acquisitions-Underwriting", private=True,
-         stat=("50+", "deals underwritten",
-               "Small-bay · sale-leaseback · portfolio · contract assignment")),
+         demo="demos/underwriting/index.html", img="underwriting.png", sample=True),
     dict(slug="northmark", cat="research",
          title="Northmark Intelligence", date="2026", year="2026",
          blurb="A Toronto research venture producing Canadian commercial real estate research for private "
@@ -84,8 +81,7 @@ PROJECTS = [
          short="Canadian CRE research venture for private equity clients",
          tags=["Market research", "Strategy", "Canada"],
          repo=f"{GH}/tommyrobins91/tree/main/projects/northmark-intelligence", private=True,
-         stat=("GTA", "market research for private equity",
-               "Market brief · AI strategy deck · comp tracker · Muskoka pipeline")),
+         demo="demos/northmark-comps/index.html", img="northmark.png", sample=True),
     dict(slug="state-population", cat="schack",
          title="U.S. state population explorer", date="October 2026", year="2026",
          blurb="One CSV in, a full census briefing out. Every view moves together through 235 years of state "
@@ -100,8 +96,7 @@ PROJECTS = [
          short="Development, capital markets and valuation projects",
          tags=["Development", "Capital markets", "Valuation"],
          repo=f"{GH}/tommyrobins91/tree/main/projects/schack-development-coursework",
-         stat=("MSRE", "Real Estate Finance and Investment",
-               "Development · capital markets · valuation · corporate finance")),
+         img="coursework.png"),
 ]
 
 TOOLS = [
@@ -152,15 +147,16 @@ def demo_link(p, prefix=""):
     if not p.get("demo"):
         return ""
     url = p["demo"] if p["demo"].startswith("http") else prefix + p["demo"]
-    return f'<a class="pill" href="{url}"{ext(url)}>Live demo</a>'
+    return f'<a class="btn solid" href="{url}"{ext(url)}>Open the live demo</a>'
 
 
 def card(p):
     href = f'projects/{p["slug"]}.html'
     cls = "card feature" if p.get("feature") else "card"
-    return (f'<article class="{cls}">{visual(p)}<div class="txt"><div class="date">{p["date"]}</div>\n'
-            f'<h3><a href="{href}">{escape(p["title"])}</a></h3><p>{escape(p["blurb"])}</p>'
-            f'<div class="row"><a class="cs" href="{href}">Read the case study →</a>{demo_link(p)}</div></div></article>')
+    badge = '<span class="pill">Live demo</span>' if p.get("demo") else ""
+    return (f'<a class="{cls}" href="{href}">{visual(p)}<div class="txt"><div class="date">{p["date"]}</div>\n'
+            f'<h3>{escape(p["title"])}</h3><p>{escape(p["blurb"])}</p>'
+            f'<div class="row"><span class="cs">Read the case study →</span>{badge}</div></div></a>')
 
 
 def status(p):
@@ -231,11 +227,17 @@ def build_case(i, p):
     if p.get("repo"):
         acts += f'<a class="btn" href="{p["repo"]}" target="_blank" rel="noopener">View on GitHub</a>'
     content = (ROOT / "content" / f'{p["slug"]}.html').read_text().strip()
+    hero = visual(p, "../", wide=True)
+    if p.get("demo"):
+        url = p["demo"] if p["demo"].startswith("http") else "../" + p["demo"]
+        hero = f'<a class="heroimg" href="{url}"{ext(url)}>{hero}</a>'
+    if p.get("sample"):
+        acts += '<span class="snote">Runs on fictional sample data</span>'
     body = f"""<main class="case"><div class="wrap narrow">
 <a class="back" href="../index.html#projects">← All projects</a>
 <div class="date">{p["date"]}</div><h1 class="ctitle">{escape(p["title"])}</h1>
 <p class="lede">{escape(p["blurb"])}</p><div class="tags">{tags}</div><div class="row act">{acts}</div></div>
-<div class="wrap">{visual(p, "../", wide=True)}</div>
+<div class="wrap">{hero}</div>
 <div class="wrap narrow prose">{content}
 <a class="next" href="{nxt["slug"]}.html"><span>Next project</span>{escape(nxt["title"])} →</a></div></main>"""
     (ROOT / "projects" / f'{p["slug"]}.html').write_text(page(
