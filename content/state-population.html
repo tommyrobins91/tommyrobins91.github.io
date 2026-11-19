@@ -1,0 +1,16 @@
+<h2>The assignment</h2>
+<p>A Schack class assignment asked us to automate U.S. state population data from 1790 to 2025 "in an interesting and efficient way." Most answers to that are a cleaned spreadsheet and a chart. I wanted the automation to be the product.</p>
+<h2>What I built</h2>
+<p>A single page that takes one CSV and rebuilds a full census briefing from it.</p>
+<ul>
+<li>A four-step pipeline on the page (ingest, validate, compute, render) that reports what it read and flags bad rows. The sample file is 1,104 rows covering 51 areas across 25 counts.</li>
+<li>A play button that moves every view through 235 years together</li>
+<li>Top 12 states ranked by population, a tile map of the country, and a size-versus-growth bubble chart</li>
+<li>Milestones found automatically by scanning the data for new leaders, records and firsts</li>
+<li>A profile for any state, with a trend projection to 2040 and a comparison against a second state</li>
+<li>Regional share of U.S. population by Census Bureau region</li>
+<li>A growth leaderboard between any two counts, sortable, with CAGR and rank change, and a copy-as-CSV button</li>
+</ul>
+<p>Load a different file in the same format and the whole page rebuilds.</p>
+<h2>Notes on the data</h2>
+<p>Source is the U.S. Census Bureau decennial counts from 1790 to 2020. Years that don't end in 0 are treated as estimates. Early counts include territories before statehood. Projections extend each state's recent growth rate and are not demographic forecasts.</p>

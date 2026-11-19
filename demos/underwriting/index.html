@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Value-Add Industrial Underwriting | Demo</title>
+<link rel="stylesheet" href="../demo.css">
+<style>
+.inp{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+.inp label{font-size:12px;color:var(--tx2);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.inp input{width:92px;text-align:right}
+.inp h3{grid-column:1/-1;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);margin-top:6px;border-top:1px solid var(--line);padding-top:10px}
+.inp h3:first-child{border:0;padding-top:0;margin-top:0}
+.cf td:first-child{color:var(--tx2)}.cf tr.t td{font-weight:650;border-top:1px solid #cfd1cc}
+.sens td{text-align:right;font-variant-numeric:tabular-nums}.sens td.h,.sens th{background:#f3f4f1}
+.sens td.hit{background:#dcf3e8;color:#0d5c3c}.sens td.base{outline:2px solid #0b0b0b;outline-offset:-2px;font-weight:700}
+.flag{margin-top:12px;padding:10px 12px;border-radius:8px;background:#fff1e8;color:#7a2e0b;font-size:13px}
+.flag.ok{background:#e6f5ee;color:#0d5c3c}
+</style></head><body>
+<div class="top"><div><b>Value-Add Industrial Underwriting</b><small>Sample deal, five-year hold</small></div><a href="../../projects/underwriting.html">← Back to the case study</a></div>
+<div class="banner">A simplified version of the acquisitions model, run on a made-up small-bay building. The firm's 39-tab model and all real deal figures stay private.</div>
+<div class="app">
+<h1>Sample small-bay building, Central Florida</h1>
+<p class="sub">48,000 SF across six units, with in-place rents below market. Leases roll to market as they expire, with three months of downtime per rollover. Change the price, rents or debt and the returns recalculate.</p>
+<div class="kpis" id="kpis"></div>
+<div class="cols">
+<div>
+<div class="panel"><h2>Cash flow</h2><p class="note">Dollars. NNN leases, so only non-recoverable expenses hit NOI.</p><div style="overflow:auto"><table class="cf" id="cf"></table></div></div>
+<div class="panel"><h2>NOI by year</h2><p class="note">The lift comes from leases rolling to market.</p><div id="chart"></div></div>
+<div class="panel"><h2>Levered IRR sensitivity</h2><p class="note">Purchase price down, exit cap rate across. Green cells clear the target IRR. The box is the base case.</p><table class="sens" id="sens"></table></div>
+</div>
+<div class="panel"><h2>Inputs</h2><p class="note">Sample assumptions.</p><div class="inp" id="inp"></div><div id="flag"></div>
+<h2 style="margin-top:18px">Rent roll</h2><p class="note">Six units, sample tenants.</p><table id="rr"></table></div>
+</div></div>
+<div class="tip" id="tip"></div>
+<script>
+const F=[["Deal",[["price","Purchase price ($)",6200000],["sf","Building SF",48000],["close","Closing costs (%)",2],["capex","Capex ($/SF)",8]]],
+["Rents",[["mkt","Market rent ($/SF NNN)",13],["grow","Rent growth (%)",3],["vac","Vacancy and credit (%)",5],["nonrec","Non-recoverable opex ($/SF)",0.75]]],
+["Debt",[["ltv","Loan to value (%)",65],["rate","Interest rate (%)",6.75],["amort","Amortization (yrs)",25]]],
+["Exit",[["exitcap","Exit cap rate (%)",7],["sale","Sale costs (%)",2],["target","Target levered IRR (%)",15]]]];
+const U=[["Unit 100","Sample HVAC Supply",9000,9.25,1],["Unit 200","Sample Cabinet Co",7000,9.75,2],["Unit 300","Sample Auto Parts",8000,9.00,1],["Unit 400","Sample Print Shop",6000,10.25,3],["Unit 500","Sample Logistics",10000,9.50,4],["Unit 600","Sample Tile Co",8000,9.60,2]];
+const V={};
+document.getElementById("inp").innerHTML=F.map(([h,a])=>`<h3>${h}</h3>`+a.map(([k,l,v])=>{V[k]=v;return `<label>${l}<input type="number" step="any" id="${k}" value="${v}"></label>`}).join("")).join("");
+document.querySelectorAll("#inp input").forEach(i=>i.oninput=()=>{V[i.id]=parseFloat(i.value)||0;render()});
+document.getElementById("rr").innerHTML=`<thead><tr><th>Unit</th><th>Tenant</th><th class="n">SF</th><th class="n">Rent/SF</th><th class="n">Expires</th></tr></thead><tbody>`+U.map(u=>`<tr><td>${u[0]}</td><td>${u[1]}</td><td class="n">${u[2].toLocaleString()}</td><td class="n">$${u[3].toFixed(2)}</td><td class="n">Year ${u[4]}</td></tr>`).join("")+"</tbody>";
+
+function irr(c){let lo=-0.99,hi=1;for(let i=0;i<100;i++){const m=(lo+hi)/2;const v=c.reduce((a,x,t)=>a+x/Math.pow(1+m,t),0);if(v>0)lo=m;else hi=m}return (lo+hi)/2}
+
+function model(price,exitcap){
+  const rows=[1,2,3,4,5,6].map(y=>{
+    let rent=0;
+    U.forEach(u=>{
+      const mk=V.mkt*Math.pow(1+V.grow/100,y-1);
+      if(y<u[4]) rent+=u[2]*u[3]*Math.pow(1.03,y-1);
+      else if(y===u[4]) rent+=u[2]*mk*0.75;
+      else rent+=u[2]*mk;
+    });
+    const vac=-rent*V.vac/100, op=-V.sf*V.nonrec*Math.pow(1.03,y-1);
+    return {rent,vac,op,noi:rent+vac+op};
+  });
+  const loan=price*V.ltv/100, r=V.rate/1200, n=V.amort*12;
+  const pmt=loan*r/(1-Math.pow(1+r,-n)), ds=pmt*12;
+  const bal=k=>loan*Math.pow(1+r,k)-pmt*(Math.pow(1+r,k)-1)/r;
+  const cost=price*(1+V.close/100)+V.capex*V.sf, eq=cost-loan;
+  const sale=rows[5].noi/(exitcap/100), net=sale*(1-V.sale/100);
+  const unl=[-cost], lev=[-eq];
+  for(let y=0;y<5;y++){
+    unl.push(rows[y].noi+(y===4?net:0));
+    lev.push(rows[y].noi-ds+(y===4?net-bal(60):0));
+  }
+  return {rows,loan,ds,eq,net,unl,lev,bal5:bal(60),uirr:irr(unl),lirr:irr(lev),
+    em:lev.slice(1).reduce((a,b)=>a+b,0)/eq, k:ds/loan};
+}
+const $=n=>(n<0?"(":"")+"$"+Math.abs(Math.round(n)).toLocaleString()+(n<0?")":"");
+const pct=x=>(x*100).toFixed(1)+"%";
+const tip=document.getElementById("tip");
+
+function render(){
+  const m=model(V.price,V.exitcap), gi=m.rows[0].noi/V.price;
+  document.getElementById("kpis").innerHTML=
+   `<div class="kpi"><span>Levered IRR</span><b>${pct(m.lirr)}</b><i>target ${V.target}%</i></div>`+
+   `<div class="kpi"><span>Equity multiple</span><b>${m.em.toFixed(2)}x</b><i>five-year hold</i></div>`+
+   `<div class="kpi"><span>Unlevered IRR</span><b>${pct(m.uirr)}</b><i>before debt</i></div>`+
+   `<div class="kpi"><span>Going-in cap</span><b>${pct(gi)}</b><i>year 1 NOI / price</i></div>`+
+   `<div class="kpi"><span>Year 1 DSCR</span><b>${(m.rows[0].noi/m.ds).toFixed(2)}x</b><i>NOI / debt service</i></div>`+
+   `<div class="kpi"><span>Price per SF</span><b>$${(V.price/V.sf).toFixed(0)}</b><i>${V.sf.toLocaleString()} SF</i></div>`;
+  const neg=m.k>gi;
+  document.getElementById("flag").innerHTML=`<div class="flag ${neg?"":"ok"}">`+(neg
+    ?`Negative leverage: the loan constant (${pct(m.k)}) is above the going-in cap rate (${pct(gi)}). The deal depends on rents resetting at rollover.`
+    :`Positive leverage: the going-in cap rate (${pct(gi)}) is above the loan constant (${pct(m.k)}).`)+`</div>`;
+  const R=[["Base rent",r=>r.rent],["Vacancy and credit",r=>r.vac],["Non-recoverable opex",r=>r.op],["Net operating income",r=>r.noi,1],["Debt service",()=>-m.ds],["Cash flow after debt",r=>r.noi-m.ds,1]];
+  document.getElementById("cf").innerHTML=`<thead><tr><th></th>${[1,2,3,4,5].map(y=>`<th class="n">Year ${y}</th>`).join("")}</tr></thead><tbody>`+
+    R.map(([l,f,t])=>`<tr class="${t?"t":""}"><td>${l}</td>${m.rows.slice(0,5).map(r=>`<td class="n">${$(f(r))}</td>`).join("")}</tr>`).join("")+
+    `<tr><td>Net sale proceeds</td><td colspan="4"></td><td class="n">${$(m.net)}</td></tr>`+
+    `<tr><td>Loan payoff</td><td colspan="4"></td><td class="n">${$(-m.bal5)}</td></tr>`+
+    `<tr class="t"><td>Levered cash flow</td>${m.lev.slice(1).map(v=>`<td class="n">${$(v)}</td>`).join("")}</tr></tbody>`;
+  // NOI bar chart
+  const W=560,H=200,L=56,B=26,bw=60,top=10,ph=H-B-top;
+  const nois=m.rows.slice(0,5).map(r=>r.noi), mx=Math.max(...nois)*1.15, step=(W-L-20)/5;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="NOI by year">`;
+  for(let i=0;i<=4;i++){const v=mx*i/4,y=H-B-ph*i/4;s+=`<line x1="${L}" x2="${W}" y1="${y}" y2="${y}" stroke="#eceee9"/><text x="${L-8}" y="${y+4}" font-size="11" fill="#7c7b76" text-anchor="end">$${Math.round(v/1000)}k</text>`}
+  nois.forEach((v,i)=>{
+    const h=ph*v/mx, x=L+20+i*step, y=H-B-h;
+    s+=`<path class="hb" data-t="Year ${i+1} NOI: ${$(v)}" d="M${x},${H-B} L${x},${y+4} Q${x},${y} ${x+4},${y} L${x+bw-4},${y} Q${x+bw},${y} ${x+bw},${y+4} L${x+bw},${H-B} Z" fill="#2a78d6"/>`;
+    s+=`<text x="${x+bw/2}" y="${H-8}" font-size="11.5" fill="#52514e" text-anchor="middle">Year ${i+1}</text>`;
+    if(i===0||i===4) s+=`<text x="${x+bw/2}" y="${y-6}" font-size="11.5" fill="#0b0b0b" text-anchor="middle">${$(v)}</text>`;
+  });
+  document.getElementById("chart").innerHTML=s+"</svg>";
+  document.querySelectorAll(".hb").forEach(b=>{b.onmousemove=e=>{tip.textContent=b.dataset.t;tip.style.opacity=1;tip.style.left=e.clientX+12+"px";tip.style.top=e.clientY+12+"px"};b.onmouseleave=()=>tip.style.opacity=0});
+  const ps=[-0.1,-0.05,0,0.05,0.1].map(d=>V.price*(1+d)), cs=[-0.5,-0.25,0,0.25,0.5].map(d=>V.exitcap+d);
+  document.getElementById("sens").innerHTML=`<tr><th>Price</th>${cs.map(c=>`<th class="n">${c.toFixed(2)}%</th>`).join("")}</tr>`+
+    ps.map((p,i)=>`<tr><td class="h">$${(p/1e6).toFixed(2)}M</td>${cs.map((c,j)=>{const v=model(p,c).lirr;return `<td class="${v*100>=V.target?"hit":""} ${i===2&&j===2?"base":""}">${pct(v)}</td>`}).join("")}</tr>`).join("");
+}
+render();
+</script></body></html>

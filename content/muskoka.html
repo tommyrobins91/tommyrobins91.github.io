@@ -1,0 +1,21 @@
+<h2>The problem</h2>
+<p>One of the largest landowners in Muskoka told me the hardest part of tracking development in the region is that the information is scattered. Planning notices, building permits, zoning and assessment data sit across six area municipalities and the District of Muskoka, each with its own format. Paid pipeline trackers like Altus cover Toronto and Vancouver, not cottage country. I checked for an existing product before building and didn't find one.</p>
+<h2>What I built</h2>
+<p>A single-page tool that pulls everything onto one map:</p>
+<ul>
+<li>Planning applications (severances, rezonings, minor variances, plans of subdivision and condominium) across all six municipalities</li>
+<li>Building permits, with teardown and rebuild flags</li>
+<li>Lot size, zoning and assessed value for each property</li>
+<li>Property-level planning and permit history back to 1999</li>
+<li>A 500-metre "nearby activity" view around any address</li>
+<li>Property search and a "filed in the last 30 days" panel</li>
+<li>One-click Excel export</li>
+</ul>
+<h2>How it works</h2>
+<p>The data comes from the District's ArcGIS REST services. Those endpoints only answer requests that come from the District's own map pages, so the refresh job runs inside a browser session on those pages, pulls the layers, and rebuilds the dataset. A scheduled task reruns it and flags new filings.</p>
+<h2>What it shows</h2>
+<p>Twenty-five years of history makes the trend data useful on its own. Minor variances in Muskoka Lakes have held between about 45 and 95 a year, so a jump outside that band is worth noticing. The open subdivision and condo files give a rough count of the supply that's actually in the approvals process.</p>
+<h2>Privacy</h2>
+<p>Applicant names are removed from this public version. Addresses, file numbers and links to the municipal notices are kept.</p>
+<h2>Next</h2>
+<p>The same engine can be pointed at other fragmented Ontario markets (Simcoe, Kawartha Lakes) under one codebase.</p>

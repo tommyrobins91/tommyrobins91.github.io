@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Northmark Residential Comp Tracker | Demo</title>
+<link rel="stylesheet" href="../demo.css">
+</head><body>
+<div class="top"><div><b>Northmark Intelligence</b><small>Residential comp tracker</small></div><a href="../../projects/northmark.html">← Back to the case study</a></div>
+<div class="banner">Demo with fictional sold listings in a mid-size Ontario city. The real tracker and Northmark client work stay private.</div>
+<div class="app">
+<h1>Low-rise sold comps</h1>
+<p class="sub">Every sold listing in one table, with list-to-sale ratio, days on market and building age. Filter by type, area and bedrooms. Click a column to sort.</p>
+<div class="filters">
+<label>Type<select id="type"><option value="">All types</option><option>Detached</option><option>Semi-detached</option><option>Townhouse</option></select></label>
+<label>Area<select id="area"><option value="">All areas</option></select></label>
+<label>Min bedrooms<select id="beds"><option value="0">Any</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option></select></label>
+<button class="pri" id="csv">Download CSV</button>
+</div>
+<div class="kpis" id="kpis"></div>
+<div class="panel"><h2>Median list-to-sale ratio by month</h2><p class="note">Above 100% means homes sold over asking. Hover a point for the month's count.</p><div id="chart"></div></div>
+<div class="panel"><h2>Sold listings</h2><p class="note" id="cnt"></p>
+<div class="scroll"><table><thead><tr id="head"></tr></thead><tbody id="rows"></tbody></table></div></div>
+</div>
+<div class="tip" id="tip"></div>
+<script>
+let seed=23;const r=()=>(seed=(seed*16807)%2147483647)/2147483647;const pick=a=>a[Math.floor(r()*a.length)];
+const areas=["North End","South End","East End","West End","Downtown","Riverside"];
+const types=[["Detached",.55,880000],["Semi-detached",.2,700000],["Townhouse",.25,640000]];
+const months=["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"];
+const heat=[.97,.985,1.01,1.025,1.02,1.0,.985,.975,.98,.975];
+const D=[];
+for(let i=0;i<240;i++){
+  const t=(()=>{const x=r();return x<types[0][1]?types[0]:x<types[0][1]+types[1][1]?types[1]:types[2]})();
+  const mi=Math.floor(r()*months.length), beds=t[0]==="Detached"?3+Math.floor(r()*3):2+Math.floor(r()*3);
+  const built=1950+Math.floor(r()*74), age=2026-built;
+  const list=Math.round(t[2]*(0.75+r()*0.6)*(1+(beds-3)*0.08)*(1-age*0.0015)/1000)*1000;
+  const ratio=heat[mi]+(r()-0.5)*0.07;
+  D.push({id:"L-"+String(4100+i),area:pick(areas),type:t[0],beds,built,list,sold:Math.round(list*ratio/1000)*1000,
+    ratio:0,dom:Math.max(3,Math.round((ratio>1?9:22)+(r()-0.3)*24)),month:months[mi]});
+}
+D.forEach(d=>d.ratio=d.sold/d.list);
+document.getElementById("area").innerHTML+=areas.map(a=>`<option>${a}</option>`).join("");
+const C=[["id","Listing"],["month","Sold"],["area","Area"],["type","Type"],["beds","Beds",1],["built","Built",1],["list","List price",1],["sold","Sold price",1],["ratio","List-to-sale",1],["dom","Days on market",1]];
+let sortK="month",sortD=-1,cur=[];
+document.getElementById("head").innerHTML=C.map(c=>`<th data-k="${c[0]}" class="${c[2]?"n":""}">${c[1]}</th>`).join("");
+document.querySelectorAll("#head th").forEach(th=>th.onclick=()=>{const k=th.dataset.k;sortD=k===sortK?-sortD:-1;sortK=k;render()});
+const med=a=>{if(!a.length)return 0;const s=a.slice().sort((x,y)=>x-y),m=Math.floor(s.length/2);return s.length%2?s[m]:(s[m-1]+s[m])/2};
+const $=n=>"$"+Math.round(n).toLocaleString(), P=x=>(x*100).toFixed(1)+"%";
+const tip=document.getElementById("tip");
+function render(){
+  const t=document.getElementById("type").value,a=document.getElementById("area").value,b=+document.getElementById("beds").value;
+  cur=D.filter(d=>(!t||d.type===t)&&(!a||d.area===a)&&d.beds>=b);
+  cur.sort((x,y)=>(x[sortK]>y[sortK]?1:x[sortK]<y[sortK]?-1:0)*sortD);
+  const over=cur.filter(d=>d.ratio>1).length;
+  document.getElementById("kpis").innerHTML=
+   `<div class="kpi"><span>Sales</span><b>${cur.length}</b><i>January to October 2026</i></div>`+
+   `<div class="kpi"><span>Median sold price</span><b>${$(med(cur.map(d=>d.sold)))}</b><i>filtered set</i></div>`+
+   `<div class="kpi"><span>Median list-to-sale</span><b>${P(med(cur.map(d=>d.ratio)))}</b><i>${cur.length?Math.round(over/cur.length*100):0}% sold over asking</i></div>`+
+   `<div class="kpi"><span>Median days on market</span><b>${med(cur.map(d=>d.dom))}</b><i>list to firm sale</i></div>`;
+  document.getElementById("cnt").textContent=`${cur.length} listings`;
+  document.getElementById("rows").innerHTML=cur.map(d=>`<tr><td>${d.id}</td><td>${d.month}</td><td>${d.area}</td><td>${d.type}</td><td class="n">${d.beds}</td><td class="n">${d.built}</td><td class="n">${$(d.list)}</td><td class="n">${$(d.sold)}</td><td class="n"><span class="chip ${d.ratio>1?"ok":""}">${P(d.ratio)}</span></td><td class="n">${d.dom}</td></tr>`).join("");
+  const pts=months.map(m=>{const s=cur.filter(d=>d.month===m);return {m,n:s.length,v:s.length?med(s.map(d=>d.ratio)):null}});
+  const W=900,H=230,L=52,R=16,T=14,B=28,vals=pts.filter(p=>p.v!=null).map(p=>p.v);
+  const lo=Math.min(0.95,...vals)-0.005,hi=Math.max(1.05,...vals)+0.005;
+  const x=i=>L+i*(W-L-R)/(months.length-1), y=v=>T+(hi-v)/(hi-lo)*(H-T-B);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Median list-to-sale ratio by month">`;
+  [0.96,0.98,1.0,1.02,1.04].filter(v=>v>lo&&v<hi).forEach(v=>{s+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="${v===1?"#b9bbb5":"#eceee9"}" ${v===1?'stroke-dasharray="4 3"':""}/><text x="${L-8}" y="${y(v)+4}" font-size="11" fill="#7c7b76" text-anchor="end">${Math.round(v*100)}%</text>`});
+  pts.forEach((p,i)=>{s+=`<text x="${x(i)}" y="${H-8}" font-size="11" fill="#7c7b76" text-anchor="middle">${new Date(p.m+"-15").toLocaleString("en-US",{month:"short"})}</text>`});
+  const path=pts.map((p,i)=>p.v==null?null:`${x(i)},${y(p.v)}`).filter(Boolean);
+  if(path.length) s+=`<polyline points="${path.join(" ")}" fill="none" stroke="#2a78d6" stroke-width="2"/>`;
+  pts.forEach((p,i)=>{if(p.v==null)return;s+=`<circle cx="${x(i)}" cy="${y(p.v)}" r="4.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/><circle class="hit" data-t="${p.m}: ${P(p.v)} median, ${p.n} sales" cx="${x(i)}" cy="${y(p.v)}" r="14" fill="transparent"/>`});
+  document.getElementById("chart").innerHTML=s+"</svg>";
+  document.querySelectorAll(".hit").forEach(c=>{c.onmousemove=e=>{tip.textContent=c.dataset.t;tip.style.opacity=1;tip.style.left=e.clientX+12+"px";tip.style.top=e.clientY+12+"px"};c.onmouseleave=()=>tip.style.opacity=0});
+}
+document.querySelectorAll("select").forEach(e=>e.onchange=render);
+document.getElementById("csv").onclick=()=>{
+  const h=C.map(c=>c[1]).join(",")+"\n";
+  const b=new Blob([h+cur.map(d=>C.map(c=>c[0]==="ratio"?d.ratio.toFixed(4):d[c[0]]).join(",")).join("\n")],{type:"text/csv"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="comps-sample.csv";a.click();
+};
+render();
+</script></body></html>
