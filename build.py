@@ -41,8 +41,8 @@ PROJECTS = [
          short="Ranks private industrial owners by likelihood to sell",
          tags=["Python", "Public records", "CMBS data"],
          repo=f"{GH}/Florida-Distress-Monitor", private=True,
-         stat=("5", "signals, one ranked list",
-               "Tax delinquency · liens · code violations · hold period · loan maturity")),
+         demo="demos/distress-monitor/index.html", img="distress-monitor.png",
+         note="My working tool with anonymized data: every owner, contact, address and loan is fake"),
     dict(slug="sourcing-pipeline", cat="tools",
          title="Off-market sourcing pipeline", date="July 2026", year="2026",
          blurb="Turns a raw Reonomy export of 1,000+ properties into a filtered, CRM-ready call list of "
@@ -247,6 +247,8 @@ def build_case(i, p):
     if p.get("demo"):
         url = p["demo"] if p["demo"].startswith("http") else "../" + p["demo"]
         hero = f'<a class="heroimg" href="{url}"{ext(url)}>{hero}</a>'
+    if p.get("note"):
+        acts += f'<span class="snote">{escape(p["note"])}</span>'
     body = f"""<main class="case"><div class="wrap narrow">
 <a class="back" href="../index.html#projects">← All projects</a>
 <div class="date">{p["date"]}</div><h1 class="ctitle">{escape(p["title"])}</h1>
