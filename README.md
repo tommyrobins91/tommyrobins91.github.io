@@ -16,7 +16,7 @@ To rebuild after a change:
 python3 build.py
 ```
 
-Interactive demos live in `demos/<name>/index.html` and share `demos/demo.css`. They run on fictional data only. Card previews in `img/` are screenshots of the demos.
+Only publish things actually built. Card previews in `img/` are screenshots of the real tools.
 
 To add a project, add an entry to `PROJECTS` in `build.py`, write `content/<slug>.html`, and drop a screenshot in `img/` if there is one.
 

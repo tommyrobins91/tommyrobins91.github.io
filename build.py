@@ -41,7 +41,8 @@ PROJECTS = [
          short="Ranks private industrial owners by likelihood to sell",
          tags=["Python", "Public records", "CMBS data"],
          repo=f"{GH}/Florida-Distress-Monitor", private=True,
-         demo="demos/distress-monitor/index.html", img="distress-monitor.png", sample=True),
+         stat=("5", "signals, one ranked list",
+               "Tax delinquency · liens · code violations · hold period · loan maturity")),
     dict(slug="sourcing-pipeline", cat="tools",
          title="Off-market sourcing pipeline", date="July 2026", year="2026",
          blurb="Turns a raw Reonomy export of 1,000+ properties into a filtered, CRM-ready call list of "
@@ -49,7 +50,8 @@ PROJECTS = [
          short="Reonomy export to a filtered, CRM-ready call list",
          tags=["Python", "pandas", "Airtable"],
          repo=f"{GH}/Off-Market-Sourcing-Pipeline", private=True,
-         demo="demos/sourcing-pipeline/index.html", img="sourcing-pipeline.png", sample=True),
+         stat=("1,359", "properties in, one call list out",
+               "Institutional filter · contact rules · occupant count · size bands · Airtable import")),
     dict(slug="multifamily", cat="tools",
          title="Multifamily rent roll monitor", date="October 2026", year="2026",
          blurb="Occupancy, loss-to-lease, unit mix and lease rollover across a 5-property, 240-unit portfolio, "
@@ -65,7 +67,7 @@ PROJECTS = [
          short="AMT, EQIX and DLR coverage; EQIX pitch approved by the IC",
          tags=["Valuation", "REITs", "Excel"],
          repo=f"{GH}/Digital-Infrastructure-REIT-Research",
-         demo="demos/reit-valuation/index.html", img="reit-research.png", sample=True),
+         stat=("EQIX", "approved by the Investment Committee", "NAV · FFO/AFFO · DDM · DCF")),
     dict(slug="underwriting", cat="research",
          title="Industrial acquisitions underwriting", date="2026", year="2026",
          blurb="50+ value-add industrial deals underwritten across Florida on a 39-tab acquisitions model, "
@@ -73,7 +75,8 @@ PROJECTS = [
          short="50+ value-add industrial deals on a 39-tab model",
          tags=["Excel", "Python", "Acquisitions"],
          repo=f"{GH}/Industrial-Acquisitions-Underwriting", private=True,
-         demo="demos/underwriting/index.html", img="underwriting.png", sample=True),
+         stat=("50+", "deals underwritten",
+               "Small-bay · sale-leaseback · portfolio · contract assignment")),
     dict(slug="northmark", cat="research",
          title="Northmark Intelligence", date="2026", year="2026",
          blurb="A Toronto research venture producing Canadian commercial real estate research for private "
@@ -81,7 +84,8 @@ PROJECTS = [
          short="Canadian CRE research venture for private equity clients",
          tags=["Market research", "Strategy", "Canada"],
          repo=f"{GH}/tommyrobins91/tree/main/projects/northmark-intelligence", private=True,
-         demo="demos/northmark-comps/index.html", img="northmark.png", sample=True),
+         stat=("GTA", "market research for private equity",
+               "Market brief · AI strategy deck · comp tracker · Muskoka pipeline")),
     dict(slug="state-population", cat="schack",
          title="U.S. state population explorer", date="October 2026", year="2026",
          blurb="One CSV in, a full census briefing out. Every view moves together through 235 years of state "
@@ -96,7 +100,8 @@ PROJECTS = [
          short="Development, capital markets and valuation projects",
          tags=["Development", "Capital markets", "Valuation"],
          repo=f"{GH}/tommyrobins91/tree/main/projects/schack-development-coursework",
-         img="coursework.png"),
+         stat=("MSRE", "Real Estate Finance and Investment",
+               "Development · capital markets · valuation · corporate finance")),
 ]
 
 # Projects shown on the site, in this order. Every entry in PROJECTS stays
@@ -198,7 +203,9 @@ def build_index():
         table = ('<table class="idx" style="margin-bottom:72px"><thead><tr><th>Project</th><th class="hide">What it does</th>'
                  f'<th class="hide">Area</th><th>Year</th><th>Status</th></tr></thead><tbody>{rows}</tbody></table>')
     else:
-        sub2 = "Click any project for the case study and a live demo."
+        n_demo = sum(1 for p in PROJECTS if p.get("demo"))
+        sub2 = ("Click any project for the case study and a live demo." if n_demo == len(PROJECTS)
+                else "Click any project for the case study. The ones marked Live demo open the working tool.")
         table = ""
 
     tools = "".join(
@@ -244,8 +251,6 @@ def build_case(i, p):
     if p.get("demo"):
         url = p["demo"] if p["demo"].startswith("http") else "../" + p["demo"]
         hero = f'<a class="heroimg" href="{url}"{ext(url)}>{hero}</a>'
-    if p.get("sample"):
-        acts += '<span class="snote">Runs on fictional sample data</span>'
     body = f"""<main class="case"><div class="wrap narrow">
 <a class="back" href="../index.html#projects">← All projects</a>
 <div class="date">{p["date"]}</div><h1 class="ctitle">{escape(p["title"])}</h1>
