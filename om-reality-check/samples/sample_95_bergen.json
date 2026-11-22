@@ -1,0 +1,43 @@
+{
+  "_note": "FICTIONAL sample OM for testing. Real address, invented offering. Not a real listing.",
+  "address": "95 Bergen Street, Brooklyn",
+  "asking_price": 4250000,
+  "stated_cap_rate": 0.055,
+  "units_res": 9,
+  "gross_sf": 7200,
+  "year_built": 1910,
+  "rs_units": 2,
+  "fm_units": 7,
+  "gross_income_current": 302400,
+  "gross_income_proforma": 372000,
+  "vacancy_pct": 0.01,
+  "real_estate_taxes": 9500,
+  "total_expenses": 82000,
+  "noi_current": 217376,
+  "noi_proforma": 279000,
+  "rs_rent_growth": 0.03,
+  "fm_rent_growth": 0.04,
+  "expense_growth": 0.02,
+  "claims_deregulation_upside": true,
+  "renovation_rent_bump": 800,
+  "air_rights_sf": 1500,
+  "mentions_tax_abatement": true,
+  "abatement_expiry_disclosed": false,
+  "rent_roll": [
+    {"unit": "1A", "status": "RS", "current_rent": 1450, "proforma_rent": 3200},
+    {"unit": "1B", "status": "RS", "current_rent": 1610, "proforma_rent": 3200},
+    {"unit": "2A", "status": "FM", "current_rent": 3150, "proforma_rent": 3500},
+    {"unit": "2B", "status": "FM", "current_rent": 3050, "proforma_rent": 3500},
+    {"unit": "3A", "status": "FM", "current_rent": 3200, "proforma_rent": 3600},
+    {"unit": "3B", "status": "FM", "current_rent": 3100, "proforma_rent": 3600},
+    {"unit": "4A", "status": "FM", "current_rent": 3300, "proforma_rent": 3700},
+    {"unit": "4B", "status": "FM", "current_rent": 3240, "proforma_rent": 3700},
+    {"unit": "Garden", "status": "FM", "current_rent": 2100, "proforma_rent": 2600}
+  ],
+  "quotes": [
+    {"field": "claims_deregulation_upside", "text": "Two remaining stabilized units offer significant upside to market upon turnover.", "page": 3},
+    {"field": "rs_units", "text": "Seven of nine units are free market.", "page": 2},
+    {"field": "air_rights_sf", "text": "Approximately 1,500 SF of unused air rights.", "page": 2},
+    {"field": "real_estate_taxes", "text": "Real Estate Taxes (24/25): $9,500", "page": 5}
+  ]
+}

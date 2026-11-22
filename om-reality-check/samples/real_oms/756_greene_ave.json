@@ -1,0 +1,26 @@
+{
+  "_source": "Matthews REIS offering memorandum, public PDF: https://cms.matthews.com/wp-content/uploads/2026/02/756-Greene-Ave-Brooklyn-NY-OM-PP.pdf (claims transcribed by hand)",
+  "address": "756 Greene Avenue, Brooklyn",
+  "asking_price": 2400000,
+  "units_res": 4,
+  "gross_sf": 3465,
+  "rs_units": 0,
+  "fm_units": 4,
+  "stated_tax_class": "2B",
+  "gross_income_current": 182100,
+  "vacancy_pct": 0.03,
+  "real_estate_taxes": 13546,
+  "total_expenses": 36904,
+  "noi_current": 139733,
+  "rent_roll": [
+    {"unit": "1 (duplex)", "status": "FM", "current_rent": 4400},
+    {"unit": "2", "status": "FM", "current_rent": 3650},
+    {"unit": "3", "status": "FM", "current_rent": 3575},
+    {"unit": "4", "status": "FM", "current_rent": 3550}
+  ],
+  "quotes": [
+    {"field": "gross_sf", "text": "±3,465 R6B Square Footage Zoning", "page": 5},
+    {"field": "stated_tax_class", "text": "Protected Tax Class: 2B tax class limits tax increases", "page": 6},
+    {"field": "total_expenses", "text": "Total: $36,904 Exp. Ratio: 20.89%", "page": 7}
+  ]
+}

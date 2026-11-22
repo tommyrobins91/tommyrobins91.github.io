@@ -34,6 +34,13 @@ PROJECTS = [
          tags=["JavaScript", "ArcGIS REST", "Excel export"],
          demo=f"{SITE}/Muskoka-Dev-Pipeline/", repo=f"{GH}/Muskoka-Dev-Pipeline",
          img="muskoka.png"),
+    dict(slug="om-reality-check", cat="tools",
+         title="OM Reality Check", date="November 2026", year="2026",
+         blurb="An automated second opinion on NYC multifamily offering memoranda. It checks the broker's claims "
+               "against seven city datasets and current rent and tax law, then rebuilds NOI and value.",
+         short="Audits broker OMs against NYC public records and rent law",
+         tags=["Python", "Streamlit", "NYC Open Data", "Claude API"],
+         repo=f"{GH}/tommyrobins91.github.io/tree/main/om-reality-check", img="om-reality-check.jpg"),
     dict(slug="distress-monitor", cat="tools",
          title="Florida industrial distress monitor", date="November 2026", year="2026",
          blurb="Scores private industrial owners on how likely they are to sell, using CMBS loan tapes, "
@@ -41,7 +48,8 @@ PROJECTS = [
          short="Ranks private industrial owners by likelihood to sell",
          tags=["Python", "Public records", "CMBS data"],
          repo=f"{GH}/Florida-Distress-Monitor", private=True,
-         demo="demos/distress-monitor/index.html", img="distress-monitor.png", sample=True),
+         demo="demos/distress-monitor/index.html", img="distress-monitor.png",
+         note="My working tool with anonymized data: every owner, contact, address and loan is fake"),
     dict(slug="sourcing-pipeline", cat="tools",
          title="Off-market sourcing pipeline", date="July 2026", year="2026",
          blurb="Turns a raw Reonomy export of 1,000+ properties into a filtered, CRM-ready call list of "
@@ -49,7 +57,8 @@ PROJECTS = [
          short="Reonomy export to a filtered, CRM-ready call list",
          tags=["Python", "pandas", "Airtable"],
          repo=f"{GH}/Off-Market-Sourcing-Pipeline", private=True,
-         demo="demos/sourcing-pipeline/index.html", img="sourcing-pipeline.png", sample=True),
+         stat=("1,359", "properties in, one call list out",
+               "Institutional filter · contact rules · occupant count · size bands · Airtable import")),
     dict(slug="multifamily", cat="tools",
          title="Multifamily rent roll monitor", date="October 2026", year="2026",
          blurb="Occupancy, loss-to-lease, unit mix and lease rollover across a 5-property, 240-unit portfolio, "
@@ -65,7 +74,7 @@ PROJECTS = [
          short="AMT, EQIX and DLR coverage; EQIX pitch approved by the IC",
          tags=["Valuation", "REITs", "Excel"],
          repo=f"{GH}/Digital-Infrastructure-REIT-Research",
-         demo="demos/reit-valuation/index.html", img="reit-research.png", sample=True),
+         stat=("EQIX", "approved by the Investment Committee", "NAV · FFO/AFFO · DDM · DCF")),
     dict(slug="underwriting", cat="research",
          title="Industrial acquisitions underwriting", date="2026", year="2026",
          blurb="50+ value-add industrial deals underwritten across Florida on a 39-tab acquisitions model, "
@@ -73,7 +82,8 @@ PROJECTS = [
          short="50+ value-add industrial deals on a 39-tab model",
          tags=["Excel", "Python", "Acquisitions"],
          repo=f"{GH}/Industrial-Acquisitions-Underwriting", private=True,
-         demo="demos/underwriting/index.html", img="underwriting.png", sample=True),
+         stat=("50+", "deals underwritten",
+               "Small-bay · sale-leaseback · portfolio · contract assignment")),
     dict(slug="northmark", cat="research",
          title="Northmark Intelligence", date="2026", year="2026",
          blurb="A Toronto research venture producing Canadian commercial real estate research for private "
@@ -81,7 +91,8 @@ PROJECTS = [
          short="Canadian CRE research venture for private equity clients",
          tags=["Market research", "Strategy", "Canada"],
          repo=f"{GH}/tommyrobins91/tree/main/projects/northmark-intelligence", private=True,
-         demo="demos/northmark-comps/index.html", img="northmark.png", sample=True),
+         stat=("GTA", "market research for private equity",
+               "Market brief · AI strategy deck · comp tracker · Muskoka pipeline")),
     dict(slug="state-population", cat="schack",
          title="U.S. state population explorer", date="October 2026", year="2026",
          blurb="One CSV in, a full census briefing out. Every view moves together through 235 years of state "
@@ -96,8 +107,15 @@ PROJECTS = [
          short="Development, capital markets and valuation projects",
          tags=["Development", "Capital markets", "Valuation"],
          repo=f"{GH}/tommyrobins91/tree/main/projects/schack-development-coursework",
-         img="coursework.png"),
+         stat=("MSRE", "Real Estate Finance and Investment",
+               "Development · capital markets · valuation · corporate finance")),
 ]
+
+# Projects shown on the site, in this order. Every entry in PROJECTS stays
+# defined so a project can be brought back by adding its slug here.
+SHOW = ["muskoka", "om-reality-check", "multifamily", "distress-monitor"]
+ALL_PROJECTS = PROJECTS
+PROJECTS = [p for slug in SHOW for p in ALL_PROJECTS if p["slug"] == slug]
 
 TOOLS = [
     ("Modeling", ["Excel (DCF, NAV, FFO/AFFO, debt sizing)", "ARGUS Enterprise"]),
@@ -174,34 +192,39 @@ def build_index():
         for p in PROJECTS)
     demos = sum(1 for p in PROJECTS if p.get("demo"))
 
+    cats = [c for c in CATEGORIES if any(p["cat"] == c[0] for p in PROJECTS)]
     sections = []
-    for i, (key, name, sub) in enumerate(CATEGORIES, 1):
+    for i, (key, name, sub) in enumerate(cats, 1):
         ps = [p for p in PROJECTS if p["cat"] == key]
         feat = "".join(card(p) for p in ps if p.get("feature"))
         rest = [p for p in ps if not p.get("feature")]
         gcls = "grid" if len(rest) == 2 else "grid3"
         sections.append(
-            f'<div class="cat" id="{key}"><div class="cathead"><i>0{i}</i><h3>{name}</h3></div>'
-            f'<p class="catsub">{sub}</p>{feat}<div class="{gcls}">{"".join(card(p) for p in rest)}</div></div>')
+            f'<div class="cat" id="{key}">'
+            + (f'<div class="cathead"><i>0{i}</i><h3>{name}</h3></div><p class="catsub">{sub}</p>' if len(cats) > 1 else "")
+            + f'{feat}<div class="{gcls}">{"".join(card(p) for p in rest)}</div></div>')
+
+    # The summary table only earns its space once there are more than a few projects.
+    if len(PROJECTS) > 4:
+        sub2 = "Everything in one list, then each project in detail: the problem, how it works and what it found."
+        table = ('<table class="idx" style="margin-bottom:72px"><thead><tr><th>Project</th><th class="hide">What it does</th>'
+                 f'<th class="hide">Area</th><th>Year</th><th>Status</th></tr></thead><tbody>{rows}</tbody></table>')
+    else:
+        n_demo = sum(1 for p in PROJECTS if p.get("demo"))
+        sub2 = ("Click any project for the case study and a live demo." if n_demo == len(PROJECTS)
+                else "Click a project for the case study, or a Live demo to use the tool.")
+        table = ""
 
     tools = "".join(
         f'<div class="toolgrp"><h4>{g}</h4><div class="toolsl">{"".join(f"<span>{escape(t)}</span>" for t in ts)}</div></div>'
         for g, ts in TOOLS)
 
     body = f"""<main>
-<section class="hero"><div class="wrap">
-<div class="eyebrow">Tommy Robins · NYU Schack MSRE · Anchor Capital Group</div>
-<h1>Data tools for real estate investing, <em>built from the deal side.</em></h1>
-<p class="lede">I source and underwrite value-add industrial deals in Florida and study real estate finance at NYU Schack. These are the tools, models and research I've built along the way, with Claude as my engineering partner. Each one takes a slow manual step in sourcing, underwriting or research and makes it repeatable.</p>
-<div class="btns"><a class="btn solid" href="#projects">View projects</a><a class="btn" href="{GH}" target="_blank" rel="noopener">GitHub</a></div>
-<div class="stats"><div><b>{len(PROJECTS)}</b><span>projects</span></div><div><b>{demos}</b><span>live demos</span></div><div><b>50+</b><span>deals underwritten</span></div></div>
-</div></section>
-<section id="projects" class="sec"><div class="wrap">
-<h2>Projects</h2><p class="sub2">Everything in one list, then each project in detail: the problem, how it works and what it found.</p>
-<table class="idx"><thead><tr><th>Project</th><th class="hide">What it does</th><th class="hide">Area</th><th>Year</th><th>Status</th></tr></thead><tbody>{rows}</tbody></table>
-</div></section>
-<section class="sec"><div class="wrap">
-{"".join(sections)}
+<section id="projects" class="top1"><div class="wrap">
+<div class="intro"><div class="eyebrow">Tommy Robins · NYU Schack MSRE · Anchor Capital Group</div>
+<p class="introl">I source and underwrite value-add industrial deals in Florida and study real estate finance at NYU Schack. These are tools I built with Claude to turn slow, manual steps into repeatable ones.</p></div>
+<div class="phead2"><h1 class="ph1">Projects</h1><p class="sub2">{sub2}</p></div>
+{table}{"".join(sections)}
 </div></section>
 <section id="approach" class="sec"><div class="wrap">
 <h2>Approach</h2><p class="sub2">The rules I build by.</p>
@@ -231,8 +254,8 @@ def build_case(i, p):
     if p.get("demo"):
         url = p["demo"] if p["demo"].startswith("http") else "../" + p["demo"]
         hero = f'<a class="heroimg" href="{url}"{ext(url)}>{hero}</a>'
-    if p.get("sample"):
-        acts += '<span class="snote">Runs on fictional sample data</span>'
+    if p.get("note"):
+        acts += f'<span class="snote">{escape(p["note"])}</span>'
     body = f"""<main class="case"><div class="wrap narrow">
 <a class="back" href="../index.html#projects">← All projects</a>
 <div class="date">{p["date"]}</div><h1 class="ctitle">{escape(p["title"])}</h1>
@@ -249,4 +272,9 @@ if __name__ == "__main__":
     build_index()
     for i, p in enumerate(PROJECTS):
         build_case(i, p)
+    # Remove pages for projects no longer shown so they aren't reachable from old links.
+    keep = {f'{p["slug"]}.html' for p in PROJECTS}
+    for f in (ROOT / "projects").glob("*.html"):
+        if f.name not in keep:
+            f.unlink()
     print(f"Built index.html and {len(PROJECTS)} case studies.")
