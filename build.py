@@ -198,7 +198,7 @@ def build_index():
         table = ('<table class="idx" style="margin-bottom:72px"><thead><tr><th>Project</th><th class="hide">What it does</th>'
                  f'<th class="hide">Area</th><th>Year</th><th>Status</th></tr></thead><tbody>{rows}</tbody></table>')
     else:
-        sub2 = "Each one opens to a case study: the problem, how it works and what it found, with a live demo."
+        sub2 = "Click any project for the case study and a live demo."
         table = ""
 
     tools = "".join(
@@ -209,12 +209,11 @@ def build_index():
 <section class="hero"><div class="wrap">
 <div class="eyebrow">Tommy Robins · NYU Schack MSRE · Anchor Capital Group</div>
 <h1>Data tools for real estate investing, <em>built from the deal side.</em></h1>
-<p class="lede">I source and underwrite value-add industrial deals in Florida and study real estate finance at NYU Schack. These are the tools I've built along the way, with Claude as my engineering partner. Each one takes a slow manual step in sourcing, market tracking or asset management and makes it repeatable.</p>
-<div class="btns"><a class="btn solid" href="#projects">View projects</a><a class="btn" href="{GH}" target="_blank" rel="noopener">GitHub</a></div>
+<p class="lede">I source and underwrite value-add industrial deals in Florida and study real estate finance at NYU Schack. These are tools I built with Claude to turn slow, manual steps into repeatable ones.</p>
 <div class="stats"><div><b>{len(PROJECTS)}</b><span>projects</span></div><div><b>{demos}</b><span>live demos</span></div><div><b>50+</b><span>deals underwritten</span></div></div>
 </div></section>
 <section id="projects" class="sec"><div class="wrap">
-<h2>Projects</h2><p class="sub2">{sub2}</p>
+<div class="phead2"><h2>Projects</h2><p class="sub2">{sub2}</p></div>
 {table}{"".join(sections)}
 </div></section>
 <section id="approach" class="sec"><div class="wrap">
