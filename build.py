@@ -99,6 +99,12 @@ PROJECTS = [
          img="coursework.png"),
 ]
 
+# Projects shown on the site, in this order. Every entry in PROJECTS stays
+# defined so a project can be brought back by adding its slug here.
+SHOW = ["muskoka", "multifamily", "distress-monitor"]
+ALL_PROJECTS = PROJECTS
+PROJECTS = [p for slug in SHOW for p in ALL_PROJECTS if p["slug"] == slug]
+
 TOOLS = [
     ("Modeling", ["Excel (DCF, NAV, FFO/AFFO, debt sizing)", "ARGUS Enterprise"]),
     ("Data", ["CoStar", "Reonomy", "Bloomberg", "Trepp", "Green Street", "County public records"]),
@@ -174,15 +180,26 @@ def build_index():
         for p in PROJECTS)
     demos = sum(1 for p in PROJECTS if p.get("demo"))
 
+    cats = [c for c in CATEGORIES if any(p["cat"] == c[0] for p in PROJECTS)]
     sections = []
-    for i, (key, name, sub) in enumerate(CATEGORIES, 1):
+    for i, (key, name, sub) in enumerate(cats, 1):
         ps = [p for p in PROJECTS if p["cat"] == key]
         feat = "".join(card(p) for p in ps if p.get("feature"))
         rest = [p for p in ps if not p.get("feature")]
         gcls = "grid" if len(rest) == 2 else "grid3"
         sections.append(
-            f'<div class="cat" id="{key}"><div class="cathead"><i>0{i}</i><h3>{name}</h3></div>'
-            f'<p class="catsub">{sub}</p>{feat}<div class="{gcls}">{"".join(card(p) for p in rest)}</div></div>')
+            f'<div class="cat" id="{key}">'
+            + (f'<div class="cathead"><i>0{i}</i><h3>{name}</h3></div><p class="catsub">{sub}</p>' if len(cats) > 1 else "")
+            + f'{feat}<div class="{gcls}">{"".join(card(p) for p in rest)}</div></div>')
+
+    # The summary table only earns its space once there are more than a few projects.
+    if len(PROJECTS) > 4:
+        sub2 = "Everything in one list, then each project in detail: the problem, how it works and what it found."
+        table = ('<table class="idx" style="margin-bottom:72px"><thead><tr><th>Project</th><th class="hide">What it does</th>'
+                 f'<th class="hide">Area</th><th>Year</th><th>Status</th></tr></thead><tbody>{rows}</tbody></table>')
+    else:
+        sub2 = "Each one opens to a case study: the problem, how it works and what it found, with a live demo."
+        table = ""
 
     tools = "".join(
         f'<div class="toolgrp"><h4>{g}</h4><div class="toolsl">{"".join(f"<span>{escape(t)}</span>" for t in ts)}</div></div>'
@@ -192,16 +209,13 @@ def build_index():
 <section class="hero"><div class="wrap">
 <div class="eyebrow">Tommy Robins · NYU Schack MSRE · Anchor Capital Group</div>
 <h1>Data tools for real estate investing, <em>built from the deal side.</em></h1>
-<p class="lede">I source and underwrite value-add industrial deals in Florida and study real estate finance at NYU Schack. These are the tools, models and research I've built along the way, with Claude as my engineering partner. Each one takes a slow manual step in sourcing, underwriting or research and makes it repeatable.</p>
+<p class="lede">I source and underwrite value-add industrial deals in Florida and study real estate finance at NYU Schack. These are the tools I've built along the way, with Claude as my engineering partner. Each one takes a slow manual step in sourcing, market tracking or asset management and makes it repeatable.</p>
 <div class="btns"><a class="btn solid" href="#projects">View projects</a><a class="btn" href="{GH}" target="_blank" rel="noopener">GitHub</a></div>
 <div class="stats"><div><b>{len(PROJECTS)}</b><span>projects</span></div><div><b>{demos}</b><span>live demos</span></div><div><b>50+</b><span>deals underwritten</span></div></div>
 </div></section>
 <section id="projects" class="sec"><div class="wrap">
-<h2>Projects</h2><p class="sub2">Everything in one list, then each project in detail: the problem, how it works and what it found.</p>
-<table class="idx"><thead><tr><th>Project</th><th class="hide">What it does</th><th class="hide">Area</th><th>Year</th><th>Status</th></tr></thead><tbody>{rows}</tbody></table>
-</div></section>
-<section class="sec"><div class="wrap">
-{"".join(sections)}
+<h2>Projects</h2><p class="sub2">{sub2}</p>
+{table}{"".join(sections)}
 </div></section>
 <section id="approach" class="sec"><div class="wrap">
 <h2>Approach</h2><p class="sub2">The rules I build by.</p>
@@ -249,4 +263,9 @@ if __name__ == "__main__":
     build_index()
     for i, p in enumerate(PROJECTS):
         build_case(i, p)
+    # Remove pages for projects no longer shown so they aren't reachable from old links.
+    keep = {f'{p["slug"]}.html' for p in PROJECTS}
+    for f in (ROOT / "projects").glob("*.html"):
+        if f.name not in keep:
+            f.unlink()
     print(f"Built index.html and {len(PROJECTS)} case studies.")
