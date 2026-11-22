@@ -34,6 +34,13 @@ PROJECTS = [
          tags=["JavaScript", "ArcGIS REST", "Excel export"],
          demo=f"{SITE}/Muskoka-Dev-Pipeline/", repo=f"{GH}/Muskoka-Dev-Pipeline",
          img="muskoka.png"),
+    dict(slug="om-reality-check", cat="tools",
+         title="OM Reality Check", date="November 2026", year="2026",
+         blurb="An automated second opinion on NYC multifamily offering memoranda. It checks the broker's claims "
+               "against seven city datasets and current rent and tax law, then rebuilds NOI and value.",
+         short="Audits broker OMs against NYC public records and rent law",
+         tags=["Python", "Streamlit", "NYC Open Data", "Claude API"],
+         repo=f"{GH}/OM-Reality-Check", img="om-reality-check.jpg"),
     dict(slug="distress-monitor", cat="tools",
          title="Florida industrial distress monitor", date="November 2026", year="2026",
          blurb="Scores private industrial owners on how likely they are to sell, using CMBS loan tapes, "
@@ -106,7 +113,7 @@ PROJECTS = [
 
 # Projects shown on the site, in this order. Every entry in PROJECTS stays
 # defined so a project can be brought back by adding its slug here.
-SHOW = ["muskoka", "multifamily", "distress-monitor"]
+SHOW = ["muskoka", "om-reality-check", "multifamily", "distress-monitor"]
 ALL_PROJECTS = PROJECTS
 PROJECTS = [p for slug in SHOW for p in ALL_PROJECTS if p["slug"] == slug]
 
