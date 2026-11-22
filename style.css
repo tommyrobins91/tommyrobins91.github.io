@@ -133,3 +133,10 @@ a.card:hover .cs{text-decoration:underline}
 .phead2 .sub2{margin:0!important}
 #projects{padding-top:28px}
 .phead2+.cat{padding-top:0}
+/* Projects-first landing: the link opens straight onto the projects */
+.top1{padding:34px 0 80px;background:radial-gradient(ellipse 60% 220px at 50% 0%,rgba(61,220,151,.08),transparent 70%)}
+.intro{border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:26px}
+.intro .eyebrow{margin-bottom:10px}
+.introl{color:var(--mut);font-size:16px;max-width:760px}
+.ph1{font-size:36px;letter-spacing:-.03em;font-weight:700}
+@media(max-width:860px){.top1{padding-top:24px}.ph1{font-size:30px}}

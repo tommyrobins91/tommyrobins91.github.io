@@ -205,7 +205,7 @@ def build_index():
     else:
         n_demo = sum(1 for p in PROJECTS if p.get("demo"))
         sub2 = ("Click any project for the case study and a live demo." if n_demo == len(PROJECTS)
-                else "Click any project for the case study. The ones marked Live demo open the working tool.")
+                else "Click a project for the case study, or a Live demo to use the tool.")
         table = ""
 
     tools = "".join(
@@ -213,14 +213,10 @@ def build_index():
         for g, ts in TOOLS)
 
     body = f"""<main>
-<section class="hero"><div class="wrap">
-<div class="eyebrow">Tommy Robins · NYU Schack MSRE · Anchor Capital Group</div>
-<h1>Data tools for real estate investing, <em>built from the deal side.</em></h1>
-<p class="lede">I source and underwrite value-add industrial deals in Florida and study real estate finance at NYU Schack. These are tools I built with Claude to turn slow, manual steps into repeatable ones.</p>
-<div class="stats"><div><b>{len(PROJECTS)}</b><span>projects</span></div><div><b>{demos}</b><span>live demos</span></div><div><b>50+</b><span>deals underwritten</span></div></div>
-</div></section>
-<section id="projects" class="sec"><div class="wrap">
-<div class="phead2"><h2>Projects</h2><p class="sub2">{sub2}</p></div>
+<section id="projects" class="top1"><div class="wrap">
+<div class="intro"><div class="eyebrow">Tommy Robins · NYU Schack MSRE · Anchor Capital Group</div>
+<p class="introl">I source and underwrite value-add industrial deals in Florida and study real estate finance at NYU Schack. These are tools I built with Claude to turn slow, manual steps into repeatable ones.</p></div>
+<div class="phead2"><h1 class="ph1">Projects</h1><p class="sub2">{sub2}</p></div>
 {table}{"".join(sections)}
 </div></section>
 <section id="approach" class="sec"><div class="wrap">
