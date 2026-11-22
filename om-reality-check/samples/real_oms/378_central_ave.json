@@ -1,0 +1,33 @@
+{
+  "_source": "Matthews REIS offering memorandum, public PDF: https://cms.matthews.com/wp-content/uploads/2025/11/378-Central-Ave-Brooklyn-NY-OM-1-PP.pdf (claims transcribed by hand)",
+  "address": "378 Central Avenue, Brooklyn",
+  "asking_price": 1950000,
+  "stated_cap_rate": 0.08,
+  "units_res": 4,
+  "units_commercial": 2,
+  "gross_sf": 4125,
+  "rs_units": 0,
+  "fm_units": 4,
+  "stated_tax_class": "2A",
+  "gross_income_current": 171432,
+  "gross_income_proforma": 248232,
+  "vacancy_pct": 0.03,
+  "real_estate_taxes": 11362,
+  "total_expenses": 49476,
+  "noi_current": 116813,
+  "noi_proforma": 194330,
+  "air_rights_sf": 1375,
+  "rent_roll": [
+    {"unit": "Salon & Spa", "status": "COMM", "current_rent": 2102, "proforma_rent": 3586},
+    {"unit": "Central Shop", "status": "COMM", "current_rent": 2010, "proforma_rent": 3100},
+    {"unit": "2R", "status": "FM", "current_rent": 1262, "proforma_rent": 3500},
+    {"unit": "2L", "status": "FM", "current_rent": 854, "proforma_rent": 3500},
+    {"unit": "3R", "status": "FM", "current_rent": 1375, "proforma_rent": 3500},
+    {"unit": "3L", "status": "FM", "current_rent": 2700, "proforma_rent": 3500}
+  ],
+  "quotes": [
+    {"field": "stated_cap_rate", "text": "$1,950,000 List Price 8.0% Pro-Forma Cap Rate", "page": 3},
+    {"field": "air_rights_sf", "text": "There are roughly 1,375 available air rights", "page": 4},
+    {"field": "real_estate_taxes", "text": "Real Estate Taxes (24/25) NYC DOF Tax Bill $11,362", "page": 8}
+  ]
+}

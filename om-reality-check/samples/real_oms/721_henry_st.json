@@ -1,0 +1,34 @@
+{
+  "_source": "Matthews REIS offering memorandum, public PDF: https://cms.matthews.com/wp-content/uploads/2026/05/721-Henry-St-721-Henry-St-Brooklyn-NY-OM-PP.pdf (claims transcribed by hand)",
+  "address": "721 Henry Street, Brooklyn",
+  "asking_price": 2150000,
+  "stated_cap_rate": 0.0781,
+  "units_res": 6,
+  "units_commercial": 1,
+  "gross_sf": 5694,
+  "rs_units": 3,
+  "fm_units": 3,
+  "stated_tax_class": "2B",
+  "gross_income_current": 162516,
+  "gross_income_proforma": 229929,
+  "vacancy_pct": 0.03,
+  "real_estate_taxes": 10601,
+  "total_expenses": 54969,
+  "noi_proforma": 168062,
+  "rent_roll": [
+    {"unit": "Retail", "status": "COMM", "current_rent": null, "proforma_rent": 5000},
+    {"unit": "2L", "status": "RS", "current_rent": 1316, "proforma_rent": 1355, "legal_rent": 1355},
+    {"unit": "2R", "status": "FM", "current_rent": 2600, "proforma_rent": 2650},
+    {"unit": "3L", "status": "FM", "current_rent": 2800, "proforma_rent": 3000},
+    {"unit": "3R", "status": "RS", "current_rent": 1309, "proforma_rent": 1348, "legal_rent": 1348},
+    {"unit": "4L", "status": "RS", "current_rent": 1167, "proforma_rent": 1406, "legal_rent": 1406},
+    {"unit": "4R", "status": "FM", "current_rent": 2600, "proforma_rent": 2650},
+    {"unit": "Garage", "status": "COMM", "current_rent": 1751, "proforma_rent": 1751}
+  ],
+  "quotes": [
+    {"field": "stated_cap_rate", "text": "$2,150,000 7.81% Asking Price Cap Rate (Market Rents)", "page": 8},
+    {"field": "rs_units", "text": "Corner Mixed-Use 3 Free Market / 3 RS", "page": 4},
+    {"field": "real_estate_taxes", "text": "Real Estate Taxes (25/26) NYC DOF Tax Bill $10,601", "page": 8},
+    {"field": "total_expenses", "text": "Total: $54,969 ... Exp. Ratio: 24.65%", "page": 8}
+  ]
+}

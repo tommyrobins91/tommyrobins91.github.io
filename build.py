@@ -40,7 +40,7 @@ PROJECTS = [
                "against seven city datasets and current rent and tax law, then rebuilds NOI and value.",
          short="Audits broker OMs against NYC public records and rent law",
          tags=["Python", "Streamlit", "NYC Open Data", "Claude API"],
-         repo=f"{GH}/OM-Reality-Check", img="om-reality-check.jpg"),
+         repo=f"{GH}/tommyrobins91.github.io/tree/main/om-reality-check", img="om-reality-check.jpg"),
     dict(slug="distress-monitor", cat="tools",
          title="Florida industrial distress monitor", date="November 2026", year="2026",
          blurb="Scores private industrial owners on how likely they are to sell, using CMBS loan tapes, "
