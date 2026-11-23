@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OM Reality Check | Live demo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.3/build/stlite.css">
+<style>
+#loading{font:15px/1.6 system-ui,sans-serif;color:#52514e;max-width:560px;margin:18vh auto;text-align:center}
+#loading b{display:block;font-size:20px;color:#0b0b0b;margin-bottom:6px}
+</style></head><body>
+<div id="root"><div id="loading"><b>Starting OM Reality Check</b>The app runs entirely in your browser. The first load takes about 20 to 40 seconds while Python starts up.</div></div>
+<script type="module">
+import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.3/build/stlite.js";
+mount({
+  requirements: ["requests", "altair", "pydantic"],
+  entrypoint: "app.py",
+  files: {
+ "app.py": {
+  "url": "../../om-reality-check/app.py"
+ },
+ "omrc/__init__.py": {
+  "url": "../../om-reality-check/omrc/__init__.py"
+ },
+ "omrc/analyze.py": {
+  "url": "../../om-reality-check/omrc/analyze.py"
+ },
+ "omrc/claims.py": {
+  "url": "../../om-reality-check/omrc/claims.py"
+ },
+ "omrc/config.py": {
+  "url": "../../om-reality-check/omrc/config.py"
+ },
+ "omrc/extract.py": {
+  "url": "../../om-reality-check/omrc/extract.py"
+ },
+ "omrc/nyc_data.py": {
+  "url": "../../om-reality-check/omrc/nyc_data.py"
+ },
+ "omrc/profile.py": {
+  "url": "../../om-reality-check/omrc/profile.py"
+ },
+ "omrc/report.py": {
+  "url": "../../om-reality-check/omrc/report.py"
+ },
+ "omrc/rules.py": {
+  "url": "../../om-reality-check/omrc/rules.py"
+ },
+ "omrc/underwrite.py": {
+  "url": "../../om-reality-check/omrc/underwrite.py"
+ },
+ "samples/real_oms/378_central_ave.json": {
+  "url": "../../om-reality-check/samples/real_oms/378_central_ave.json"
+ },
+ "samples/real_oms/721_henry_st.json": {
+  "url": "../../om-reality-check/samples/real_oms/721_henry_st.json"
+ },
+ "samples/real_oms/756_greene_ave.json": {
+  "url": "../../om-reality-check/samples/real_oms/756_greene_ave.json"
+ },
+ "samples/sample_95_bergen.json": {
+  "url": "../../om-reality-check/samples/sample_95_bergen.json"
+ },
+ ".cache/omrc/0923136bfc421b457c66a7c557ff3326fbbc3cd9.json": {
+  "url": "cache/0923136bfc421b457c66a7c557ff3326fbbc3cd9.json"
+ },
+ ".cache/omrc/175ff93d77fa5ea2ef98b7b770e3bf28cd94dc13.json": {
+  "url": "cache/175ff93d77fa5ea2ef98b7b770e3bf28cd94dc13.json"
+ },
+ ".cache/omrc/1c0f039fa80b8bb185769c1c371e058da8f3880c.json": {
+  "url": "cache/1c0f039fa80b8bb185769c1c371e058da8f3880c.json"
+ },
+ ".cache/omrc/223f53a57e1de8fbfd8c40176e1adb3ab36a3ad2.json": {
+  "url": "cache/223f53a57e1de8fbfd8c40176e1adb3ab36a3ad2.json"
+ },
+ ".cache/omrc/2e69039363f1cd1b22bed9920a55c9020147aced.json": {
+  "url": "cache/2e69039363f1cd1b22bed9920a55c9020147aced.json"
+ },
+ ".cache/omrc/35260388706898441cac741ded1e4491ea14ede9.json": {
+  "url": "cache/35260388706898441cac741ded1e4491ea14ede9.json"
+ },
+ ".cache/omrc/48b3e29f13ab1fc7aa2ac2c9749367dd5bdeaa79.json": {
+  "url": "cache/48b3e29f13ab1fc7aa2ac2c9749367dd5bdeaa79.json"
+ },
+ ".cache/omrc/48d7102438006b3e1dfee79d7717cba34829dc52.json": {
+  "url": "cache/48d7102438006b3e1dfee79d7717cba34829dc52.json"
+ },
+ ".cache/omrc/4f2d69434611187c7ec43bc9c7fe01ecb573c5bf.json": {
+  "url": "cache/4f2d69434611187c7ec43bc9c7fe01ecb573c5bf.json"
+ },
+ ".cache/omrc/522aa1441ba87641f9fd08a375d60016198bf562.json": {
+  "url": "cache/522aa1441ba87641f9fd08a375d60016198bf562.json"
+ },
+ ".cache/omrc/5588cbf1eda5b2d1b5e81228949ba7c54fcfaabf.json": {
+  "url": "cache/5588cbf1eda5b2d1b5e81228949ba7c54fcfaabf.json"
+ },
+ ".cache/omrc/562a5b9c289e94481983255149a299c4d2125c58.json": {
+  "url": "cache/562a5b9c289e94481983255149a299c4d2125c58.json"
+ },
+ ".cache/omrc/620bf4f41b26d7ab842246f456251b78a462f7be.json": {
+  "url": "cache/620bf4f41b26d7ab842246f456251b78a462f7be.json"
+ },
+ ".cache/omrc/6c9f2c54ce38f86fce2eb8c9fa5e0f7d7b03fee2.json": {
+  "url": "cache/6c9f2c54ce38f86fce2eb8c9fa5e0f7d7b03fee2.json"
+ },
+ ".cache/omrc/70b67486dfefa5140e312d1c72d2f833673b1304.json": {
+  "url": "cache/70b67486dfefa5140e312d1c72d2f833673b1304.json"
+ },
+ ".cache/omrc/8045a2f26b406c581d00ffc6abd391471021640c.json": {
+  "url": "cache/8045a2f26b406c581d00ffc6abd391471021640c.json"
+ },
+ ".cache/omrc/83d2e13dd4601fe7bcc138d5e9b4952ead74b682.json": {
+  "url": "cache/83d2e13dd4601fe7bcc138d5e9b4952ead74b682.json"
+ },
+ ".cache/omrc/8ba7463595b076b18da2b2007669e95aee7455f4.json": {
+  "url": "cache/8ba7463595b076b18da2b2007669e95aee7455f4.json"
+ },
+ ".cache/omrc/8e96cbac2172f03869734e211e01849cfb18945e.json": {
+  "url": "cache/8e96cbac2172f03869734e211e01849cfb18945e.json"
+ },
+ ".cache/omrc/9b361bf9b00a319f8e0420c3cf6115e349799776.json": {
+  "url": "cache/9b361bf9b00a319f8e0420c3cf6115e349799776.json"
+ },
+ ".cache/omrc/9d942273c0448ff3f2d9f0ebb70280328bacd78a.json": {
+  "url": "cache/9d942273c0448ff3f2d9f0ebb70280328bacd78a.json"
+ },
+ ".cache/omrc/a246f4289d0b59552bfc1dd4a5193ba8deaf98e9.json": {
+  "url": "cache/a246f4289d0b59552bfc1dd4a5193ba8deaf98e9.json"
+ },
+ ".cache/omrc/a9ae3166b8d78e817b248d1cd68af74a1222f8ad.json": {
+  "url": "cache/a9ae3166b8d78e817b248d1cd68af74a1222f8ad.json"
+ },
+ ".cache/omrc/ac6cb41cec3fa119c67660d183b0b17d36950455.json": {
+  "url": "cache/ac6cb41cec3fa119c67660d183b0b17d36950455.json"
+ },
+ ".cache/omrc/b0639c0152e90ebb0365da87516155b1c2ec8c5e.json": {
+  "url": "cache/b0639c0152e90ebb0365da87516155b1c2ec8c5e.json"
+ },
+ ".cache/omrc/c46be0c0005abd5407d70bb15e1cd2dfd8ee2f2d.json": {
+  "url": "cache/c46be0c0005abd5407d70bb15e1cd2dfd8ee2f2d.json"
+ },
+ ".cache/omrc/ce6da186f060cf38f9684bbfb8b35758b50554df.json": {
+  "url": "cache/ce6da186f060cf38f9684bbfb8b35758b50554df.json"
+ },
+ ".cache/omrc/d23c1f4308febdb7bdb6140dfccccf9716b2a1b5.json": {
+  "url": "cache/d23c1f4308febdb7bdb6140dfccccf9716b2a1b5.json"
+ },
+ ".cache/omrc/d93312ac09f699d1c33b9f6967993fc11589b085.json": {
+  "url": "cache/d93312ac09f699d1c33b9f6967993fc11589b085.json"
+ },
+ ".cache/omrc/dd6ac41bf42a032b353b65f5af9578631dbd0af2.json": {
+  "url": "cache/dd6ac41bf42a032b353b65f5af9578631dbd0af2.json"
+ },
+ ".cache/omrc/e5b69b6c1c862273b16e7d17d6113010039c4803.json": {
+  "url": "cache/e5b69b6c1c862273b16e7d17d6113010039c4803.json"
+ },
+ ".cache/omrc/ed636d3b569a3ec86eaedae77ae83d68f2bcc3bf.json": {
+  "url": "cache/ed636d3b569a3ec86eaedae77ae83d68f2bcc3bf.json"
+ },
+ ".cache/omrc/f1d2b01dccaade6fa66aad9da0dd2f8abbbd5837.json": {
+  "url": "cache/f1d2b01dccaade6fa66aad9da0dd2f8abbbd5837.json"
+ }
+},
+}, document.getElementById("root"));
+</script>
+</body></html>
